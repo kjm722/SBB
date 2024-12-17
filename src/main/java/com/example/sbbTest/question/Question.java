@@ -1,6 +1,7 @@
 package com.example.sbbTest.question;
 
 import com.example.sbbTest.answer.Answer;
+import com.example.sbbTest.comment.Comment;
 import com.example.sbbTest.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,4 +37,7 @@ public class Question {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
 }

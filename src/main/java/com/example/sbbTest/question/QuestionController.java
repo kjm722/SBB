@@ -3,6 +3,9 @@ package com.example.sbbTest.question;
 import com.example.sbbTest.answer.Answer;
 import com.example.sbbTest.answer.AnswerForm;
 import com.example.sbbTest.answer.AnswerService;
+import com.example.sbbTest.comment.Comment;
+import com.example.sbbTest.comment.CommentForm;
+import com.example.sbbTest.comment.CommentService;
 import com.example.sbbTest.user.SiteUser;
 import com.example.sbbTest.user.UserService;
 import jakarta.validation.Valid;
@@ -28,6 +31,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final UserService userService;
     private final AnswerService answerService;
+    private final CommentService commentService;
 
     @GetMapping("/list")
     public String list(Model model,@RequestParam(value = "page",defaultValue = "0")int page,@RequestParam(value = "kw", defaultValue = "")String kw){
@@ -38,11 +42,13 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm, @RequestParam(value = "answerPage", defaultValue = "0") int answerPage){
+    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm, @RequestParam(value = "answerPage", defaultValue = "0") int answerPage, CommentForm commentForm){
         Question question = this.questionService.getQuestion(id);
         Page<Answer> answerPaging = this.answerService.getList(question,answerPage);
+        List<Comment> commentList = this.commentService.getCommentList(question);
         model.addAttribute("question",question);
         model.addAttribute("answerPaging",answerPaging);
+        model.addAttribute("comment_list",commentList);
         return "question_detail";
     }
 
