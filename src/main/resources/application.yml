@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: sbbTest
+  output:
+    ansi:
+      enabled: always
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  datasource:
+    url: jdbc:h2:~/test
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: update
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "kimjaemin722@gmail.com"
+    password: "rlawoals722!!"
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE
