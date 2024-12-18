@@ -2,6 +2,7 @@ package com.example.sbbTest.question;
 
 import com.example.sbbTest.DataNotFoundException;
 import com.example.sbbTest.answer.Answer;
+import com.example.sbbTest.category.Category;
 import com.example.sbbTest.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +43,13 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser user){
+    public void create(String subject, String content, Category category ,SiteUser user){
         Question q = new Question();
         q.setSubject(subject);
         q.setContent(content);
         q.setCreateDate(LocalDateTime.now());
         q.setAuthor(user);
+        q.setCategory(category);
         this.questionRepository.save(q);
     }
 
@@ -82,5 +84,23 @@ public class QuestionService {
                         cb.like(u2.get("username"),"%"+kw+"%"));
             }
         };
+    }
+
+    public void viewUp(Integer id) {
+        Optional<Question> oq = this.questionRepository.findById(id);
+        if (oq.isPresent()) {
+            Question question = oq.get();
+            question.setViews(question.getViews() + 1);
+            this.questionRepository.save(question);
+        } else {
+            throw new DataNotFoundException("question not found");
+        }
+    }
+
+    public Page<Question> getCategoryQuestionList(Category category, int page){
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
+        return this.questionRepository.findByCategory(category, pageable);
     }
 }

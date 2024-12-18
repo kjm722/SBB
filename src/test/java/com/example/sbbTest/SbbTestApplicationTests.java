@@ -1,13 +1,24 @@
 package com.example.sbbTest;
 
+
+import java.util.List;
+import java.util.Optional;
+import com.example.sbbTest.answer.Answer;
+import com.example.sbbTest.answer.AnswerService;
+import com.example.sbbTest.category.CategoryService;
+import com.example.sbbTest.comment.CommentService;
 import com.example.sbbTest.question.Question;
 import com.example.sbbTest.question.QuestionRepository;
 import com.example.sbbTest.question.QuestionService;
+import com.example.sbbTest.user.SiteUser;
+import com.example.sbbTest.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
 class SbbTestApplicationTests {
@@ -15,13 +26,29 @@ class SbbTestApplicationTests {
 	@Autowired
 	private QuestionService questionService;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private AnswerService answerService;
+
+	@Autowired
+	private CommentService commentService;
+
+	@Autowired
+	private CategoryService categoryService;
+
+	@Transactional
 	@Test
 	void testJpa(){
-		for (int i = 1; i <= 300; i++) {
-			String subject = String.format("테스트 데이터입니다:[%03d]", i);
-			String content = "내용무";
-			this.questionService.create(subject, content,null);
-		}
+		String subject = "자유 게시판";
+		this.categoryService.create(subject);
+	}
+
+	@Transactional
+	@Test
+	void testCategory(){
+
 	}
 
 }
