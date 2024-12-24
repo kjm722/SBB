@@ -32,13 +32,16 @@ spring:
   mail:
     smtp:
       host: smtp.gmail.com
-      port: 465
-      username: "kimjaemin722@gmail.com"
-      password: "ebnduopccdanmttg"
+      port: 587
+      username: kimjaemin722@gmail.com
+      password: ebnd uopc cdan mttg
+      protocol: smtp
       properties:
-      starttls:
-          enable: true
-      auth: true
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
 logging:
   level:
     org.hibernate.SQL: DEBUG
