@@ -1,5 +1,6 @@
 package com.example.sbbTest.user;
 
+import com.example.sbbTest.DataNotFoundException;
 import com.example.sbbTest.answer.Answer;
 import com.example.sbbTest.answer.AnswerService;
 import com.example.sbbTest.comment.Comment;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -91,5 +93,32 @@ public class UserController {
         model.addAttribute("user_email", siteUser.getEmail());
         model.addAttribute("wrote_comment_paging", wroteComments);
         return "profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    private String modifyPassword(PasswordModifyForm passwordModifyForm){
+        return "password_modify_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify")
+    public String modifyPassword(@Valid PasswordModifyForm passwordModifyForm, BindingResult bindingResult, Principal principal, Model model){
+        if (bindingResult.hasErrors()) {
+            return "password_modify_form";
+        }
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+
+        if (!this.userService.checkPassword(siteUser,passwordModifyForm.getPassword())){
+            bindingResult.rejectValue("password1", "이전 비밀번호와 일치하지 않습니다.");
+            return "password_modify_form";
+        }
+        if (!passwordModifyForm.getModifiedPassword().equals(passwordModifyForm.getModifiedPasswordConfirm())){
+            bindingResult.rejectValue("modifiedPasswordConfirm", "새로운 비밀번호가 일치하지 않습니다.");
+            return "password_modify_form";
+        }
+
+        userService.modifyPassword(siteUser,passwordModifyForm.getModifiedPassword());
+        return "redirect:/user/profile";
     }
 }

@@ -30,16 +30,15 @@ spring:
       ddl-auto: update
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: "kimjaemin722@gmail.com"
-    password: "rlawoals722!!"
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-          auth: true
+    smtp:
+      host: smtp.gmail.com
+      port: 465
+      username: "kimjaemin722@gmail.com"
+      password: "ebnduopccdanmttg"
+      properties:
+      starttls:
+          enable: true
+      auth: true
 logging:
   level:
     org.hibernate.SQL: DEBUG

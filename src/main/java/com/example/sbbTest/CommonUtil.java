@@ -5,6 +5,8 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
+
 @Component
 public class CommonUtil {
     public String markdown(String markdown){

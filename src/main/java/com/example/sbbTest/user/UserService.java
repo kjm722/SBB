@@ -1,12 +1,17 @@
 package com.example.sbbTest.user;
 
+import com.example.sbbTest.CommonUtil;
 import com.example.sbbTest.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -14,6 +19,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private JavaMailSender mailSender;
+
+    private static final String ADMIN_ADDRESS = "kimjaemin722@gmail.com";
 
     public SiteUser create(String username, String email, String password) {
         SiteUser user = new SiteUser();
@@ -31,5 +39,14 @@ public class UserService {
         } else {
             throw new DataNotFoundException("siteuser not found");
         }
+    }
+
+    public void modifyPassword(SiteUser siteUser,String password){
+        siteUser.setPassword(passwordEncoder.encode(password));
+        this.userRepository.save(siteUser);
+    }
+
+    public boolean checkPassword(SiteUser siteUser, String password){
+        return passwordEncoder.matches(password,siteUser.getPassword());
     }
 }
