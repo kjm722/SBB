@@ -38,14 +38,12 @@ class SbbTestApplicationTests {
 	@Autowired
 	private CategoryService categoryService;
 
-	@Transactional
+
 	@Test
 	void testJpa(){
-		String subject = "자유 게시판";
-		this.categoryService.create(subject);
+		this.userService.delete("kimjaemin722@gmail.com");
 	}
 
-	@Transactional
 	@Test
 	void testCategory(){
 
