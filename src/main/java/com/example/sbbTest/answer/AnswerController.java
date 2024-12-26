@@ -87,4 +87,11 @@ public class AnswerController {
         this.answerService.vote(answer,siteUser);
         return String.format("redirect:/question/detail/%s#answer_%s",answer.getQuestion().getId(),answer.getId());
     }
+
+    @GetMapping("/list")
+    public String answerList(Model model, @RequestParam(value = "page",defaultValue = "0")int page){
+        Page<Answer> paging = this.answerService.getListByDesc(page);
+        model.addAttribute("paging",paging);
+        return "answer_list";
+    }
 }

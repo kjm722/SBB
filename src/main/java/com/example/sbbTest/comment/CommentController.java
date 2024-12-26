@@ -8,15 +8,13 @@ import com.example.sbbTest.user.SiteUser;
 import com.example.sbbTest.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -67,5 +65,12 @@ public class CommentController {
         }
         this.commentService.delete(comment);
         return String.format("redirect:/question/detail/%s",comment.getQuestion().getId());
+    }
+
+    @GetMapping("/list")
+    public String commentList(Model model, @RequestParam(value = "page", defaultValue = "0") int page){
+        Page<Comment> paging = this.commentService.getListByDesc(page);
+        model.addAttribute("paging",paging);
+        return "comment_list";
     }
 }

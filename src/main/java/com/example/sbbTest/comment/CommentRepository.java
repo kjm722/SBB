@@ -15,4 +15,9 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByQuestion(Question question);
     Page<Comment> findByAuthor(SiteUser siteUser, Pageable pageable);
     Page<Comment> findAll(Specification<Comment> spec, Pageable pageable);
+
+    @Query("select c "
+            + " from Comment c "
+            + "order by c.createDate desc")
+    Page<Comment> findByDesc(Pageable pageable);
 }

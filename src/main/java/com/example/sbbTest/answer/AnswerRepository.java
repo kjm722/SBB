@@ -15,10 +15,10 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     Page<Answer> findByQuestion(Question question, Pageable pageable);
     Page<Answer> findByAuthor(SiteUser siteUser, Pageable pageable);
     Page<Answer> findAll(Specification<Answer> spec, Pageable pageable);
-    @Query("select  a"
-            + " from Answer a "
-            + " left outer join SiteUser u on a.author=u "
-            + " where u.username = :username "
-            + "order by a.createDate desc")
     List<Answer> findQuestionByAuthor(@Param("username") String username, Pageable pageable);
+
+    @Query("select a "
+            + " from Answer a "
+            + "order by a.createDate desc")
+    Page<Answer> findByDesc(Pageable pageable);
 }

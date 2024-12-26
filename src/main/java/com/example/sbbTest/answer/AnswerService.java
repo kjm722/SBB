@@ -92,4 +92,9 @@ public class AnswerService {
             }
         };
     }
+
+    public Page<Answer> getListByDesc(int page){
+        Pageable pageable = PageRequest.of(page,10);
+        return this.answerRepository.findByDesc(pageable);
+    }
 }

@@ -15,16 +15,16 @@
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/signup}">회원가입</a>
                     <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/profile}">내 정보</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/answer/list}">최근 답변</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/comment/list}">최근 댓글</a>
+                </li>
+                <li class="nav-item" th:each="category, loop : ${category_list}">
+                    <a class="nav-link" th:href="|/category/${category.name}|" th:text="${category.name}"></a>
+                </li>
             </ul>
         </div>
     </div>
-    <table class="table">
-        <thead>
-        <tr class="text-center">
-            <th th:each="category, loop : ${category_list}">
-                <a class="nav-link" th:href="|/category/${category.name}|" th:text="${category.name}"></a>
-            </th>
-        </tr>
-        </thead>
-    </table>
 </nav>

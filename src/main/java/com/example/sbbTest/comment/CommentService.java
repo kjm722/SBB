@@ -60,4 +60,9 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
         return this.commentRepository.findByAuthor(siteUser, pageable);
     }
+
+    public Page<Comment> getListByDesc(int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return this.commentRepository.findByDesc(pageable);
+    }
 }

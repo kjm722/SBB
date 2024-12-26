@@ -25,9 +25,12 @@ public class OAuthUserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-        log.info("getAttributes : {}",oAuth2User.getAttributes());
+        String existedEmail = oAuth2User.getAttribute("email");
+        log.info("getAttributes : {}", oAuth2User.getAttributes());
 
         String provider = oAuth2UserRequest.getClientRegistration().getRegistrationId();
+
+        Optional<SiteUser> existingUser = userRepository.findByEmail(existedEmail);
 
         OAuthUserInfo oAuthUserInfo = null;
 
@@ -42,9 +45,16 @@ public class OAuthUserService extends DefaultOAuth2UserService {
         String loginId = provider + "_" + providerId;
 
         Optional<SiteUser> os = userRepository.findByusername(username);
-        SiteUser siteUser;
-        if (os.isEmpty()){
-            siteUser = SiteUser.builder()
+        if (existingUser.isPresent()) {
+            // 기존 사용자의 정보를 업데이트
+            SiteUser user = existingUser.get();
+            user.setProvider("google"); // 필요 시 제공자 정보 업데이트
+            user.setProviderId(oAuth2User.getAttribute("sub"));
+            userRepository.save(user); // 업데이트 저장
+            return new OAuthUserDetails(user, oAuth2User.getAttributes()); // CustomOAuth2User 구현 필요
+        } else {
+            SiteUser newUser = new SiteUser();
+            newUser = SiteUser.builder()
                     .username(loginId)
                     .email(email)
                     .provider(provider)
@@ -52,11 +62,8 @@ public class OAuthUserService extends DefaultOAuth2UserService {
                     .role(UserRole.USER)
                     .build();
 
-            userRepository.save(siteUser);
-        } else {
-            siteUser = os.get();
+            userRepository.save(newUser);
+            return new OAuthUserDetails(newUser, oAuth2User.getAttributes());
         }
-
-        return new OAuthUserDetails(siteUser,oAuth2User.getAttributes());
     }
 }
