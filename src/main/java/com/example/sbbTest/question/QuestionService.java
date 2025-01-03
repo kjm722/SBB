@@ -87,7 +87,7 @@ public class QuestionService {
     }
 
     public void viewUp(Integer id) {
-        Optional<Question> oq = this.questionRepository.findById(id);
+        Optional<Question> oq = Optional.ofNullable(getQuestion(id));
         if (oq.isPresent()) {
             Question question = oq.get();
             question.setViews(question.getViews() + 1);

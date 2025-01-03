@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-
+@EnableAsync
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/user")
@@ -124,7 +125,7 @@ public class UserController {
             return "password_modify_form";
         }
         try {
-            userService.modifyPassword(siteUser,passwordModifyForm.getPassword());
+            userService.modifyPassword(siteUser,passwordModifyForm.getModifiedPassword());
         } catch (Exception e){
             e.printStackTrace();
             bindingResult.reject("passwordUpdateFail",e.getMessage());
@@ -145,17 +146,16 @@ public class UserController {
             model.addAttribute("emailNotExist", true);
             return "find_password_form";
         }
-        model.addAttribute("email", findPasswordForm.getEmail());
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(findPasswordForm.getEmail());
-        simpleMailMessage.setSubject("임시 비밀번호 메일");
-        StringBuffer stringBuffer = new StringBuffer();
         String newPassword = PasswordGenerator.getPasswordChars();
-        stringBuffer.append(findPasswordForm.getEmail()).append("의 임시 비밀번호는 ").append(newPassword).append("입니다.\n")
-                .append("새 비밀번호를 통해 로그인 해주세요.");
-        simpleMailMessage.setText(stringBuffer.toString());
         this.userService.modifyPassword(siteUser, newPassword);
-        javaMailSender.send(simpleMailMessage); // JavaMailSender 사용
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append(findPasswordForm.getEmail())
+                .append("의 임시 비밀번호는 ")
+                .append(newPassword)
+                .append("입니다.\n새 비밀번호를 통해 로그인 해주세요.");
+
+        userService.sendEmail(findPasswordForm.getEmail(),"임시 비밀번호 발급",emailContent.toString()
+        );
         model.addAttribute("success", true);
         return "find_password_form";
     }

@@ -30,6 +30,6 @@ public class CategoryController {
         model.addAttribute("category_name",categoryName);
         model.addAttribute("category_list",categoryList);
         model.addAttribute("paging", paging);
-        return "category_question_list";
+        return "question_list";
     }
 }

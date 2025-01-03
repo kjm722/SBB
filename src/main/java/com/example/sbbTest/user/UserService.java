@@ -2,6 +2,7 @@ package com.example.sbbTest.user;
 
 import com.example.sbbTest.CommonUtil;
 import com.example.sbbTest.DataNotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.Random;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class UserService {
 
@@ -63,4 +64,19 @@ public class UserService {
         Optional<SiteUser> os = this.userRepository.findByEmail(email);
         os.ifPresent(this.userRepository::delete);
     }
+
+    @Async
+    public void sendEmail(String recipient, String subject, String body){
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(recipient);
+            message.setFrom(ADMIN_ADDRESS);
+            message.setSubject(subject);
+            message.setText(body);
+            this.mailSender.send(message);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

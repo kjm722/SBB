@@ -25,11 +25,7 @@ public class CategoryService {
     }
 
     public Category getCategoryByName(String name){
-        Optional<Category> oc = this.categoryRepository.findByName(name);
-        if (oc.isPresent()){
-            return oc.get();
-        }else {
-            throw new DataNotFoundException("category not found");
-        }
+        return this.categoryRepository.findByName(name)
+                .orElseThrow(() -> new DataNotFoundException("category not found"));
     }
 }

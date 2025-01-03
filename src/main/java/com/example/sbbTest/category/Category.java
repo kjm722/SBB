@@ -19,5 +19,5 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
-    private List<Question> categoryQuestionList;
+    private List<Question> QuestionList;
 }
